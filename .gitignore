@@ -1,1 +1,9 @@
 /transformer.joblib
+__pycache__/
+*.pyc
+
+Data/
+*.csv
+
+.env
+venv/

@@ -4,6 +4,8 @@ from scipy.sparse import load_npz
 from numpy import load
 
 from content_based import content_recommendation
+from hybrid_recommendations import HybridRecommenderSystem
+
 
 st.set_page_config(
     page_title="Spotify Song Recommender",
@@ -169,14 +171,14 @@ st.markdown(
 # ============================================
 # LOAD DATA
 # ============================================
-cleaned_data_path = "data/cleaned_data.csv"
+cleaned_data_path = "Data/cleaned_data.csv"
 songs_data = pd.read_csv(cleaned_data_path)
 
-transformed_data = load_npz("data/transformed_data.npz")
-track_ids = load("data/track_ids.npy", allow_pickle=True)
-filtered_data = pd.read_csv("data/collab_filtered_data.csv")
-interaction_matrix = load_npz("data/interaction_matrix.npz")
-transformed_hybrid_data = load_npz("data/transformed_hybrid_data.npz")
+transformed_data = load_npz("Data/transformed_data.npz")
+track_ids = load("Data/track_ids.npy", allow_pickle=True)
+filtered_data = pd.read_csv("Data/collab_filtered_data.csv")
+interaction_matrix = load_npz("Data/interaction_matrix.npz")
+transformed_hybrid_data = load_npz("Data/transformed_hybrid_data.npz")
 
 
 # ============================================
@@ -356,53 +358,6 @@ if st.button("Get Recommendations"):
         artist = row["artist"].title()
 
         st.markdown('<div class="result-card">', unsafe_allow_html=True)
-        if i == 0:
-            st.markdown(
-                '<div class="result-title">Currently Playing</div>',
-                unsafe_allow_html=True,
-            )
-            st.markdown(f"**{name}** - **{artist}**")
-        else:
-            st.markdown(
-                f'<div class="result-title">{i}. {name} - {artist}</div>',
-                unsafe_allow_html=True,
-            )
-
-        if pd.notna(row["spotify_preview_url"]):
-            st.audio(row["spotify_preview_url"])
-
-        st.markdown("</div>", unsafe_allow_html=True)
-# ======================================
-# CONTENT-BASED RECOMMENDATION ONLY
-# ======================================
-if st.button("Get Recommendations"):
-    if not song_name or not artist_name:
-        st.warning("Please select a song first")
-        st.stop()
-
-    st.subheader(f"Recommendations for {song_display} - {artist_display}")
-
-    try:
-        recommendations = content_recommendation(
-            song_name=song_name,
-            artist_name=artist_name,
-            songs_data=songs_data,
-            transformed_data=transformed_data,
-            k=k,
-        )
-    except Exception:
-        st.error("Song not found in content model")
-        st.stop()
-
-    # ======================================
-    # SHOW RESULTS
-    # ======================================
-    for i, row in recommendations.iterrows():
-        name = row["name"].title()
-        artist = row["artist"].title()
-
-        st.markdown('<div class="result-card">', unsafe_allow_html=True)
-
         if i == 0:
             st.markdown(
                 '<div class="result-title">Currently Playing</div>',
